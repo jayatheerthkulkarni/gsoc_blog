@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Workflow Clarification: GitHub PRs vs. The Mailing List - My Git Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .blog-post-content {
+            background-color: var(--color-bg-alt);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+        .blog-post-content h1 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--color-primary-light);
+            padding-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+        .blog-post-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary-dark);
+            font-size: 1.6rem;
+        }
+        .blog-post-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+             font-size: 1.2rem;
+        }
+        .blog-post-content p,
+        .blog-post-content li {
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .blog-post-content ul,
+        .blog-post-content ol {
+             margin-bottom: 1.5rem;
+             padding-left: 1.5rem;
+        }
+        .blog-post-content li {
+             margin-bottom: 0.5rem;
+        }
+        .blog-post-content strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+        .blog-post-content code {
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            margin: 0 0.1em;
+            font-size: 0.9em;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            color: #343a40;
+        }
+        .blog-post-content pre {
+             background-color: #f1f3f5;
+             padding: 1rem;
+             border-radius: var(--border-radius-md);
+             overflow-x: auto;
+             margin-bottom: 1.5rem;
+             box-shadow: var(--shadow-inner);
+        }
+        .blog-post-content pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .email-quote, .github-comment { 
+            border-left: 4px solid #a5f3fc;
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+        }
+        .email-quote p, .github-comment p {
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+        .email-quote cite, .github-comment cite {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-top: 0.5rem;
+        }
+        .commit-message {
+            background-color: #f8f9fa;
+            border: 1px solid var(--color-border);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .commit-message strong {
+            font-weight: bold;
+            color: #111827;
+        }
+        .blog-post-content .meta-info {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
+        }
+         .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+        }
+        .bot-message { 
+             border-left-color: #fd7e14;
+             background-color: #fff3e0; 
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">Jayatheerth</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Blog List</a>
+        <article class="blog-post-content">
+            <h1>Git Workflow Clarification: GitHub PRs vs. The Mailing List</h1>
+            <p class="meta-info">
+                <span class="post-date">Around March 12 - March 15, 2025</span>
+            </p>
+
+            <p>After sending my first patch series to the Git mailing list (and learning about the need to split it into smaller commits), I encountered another layer of the Git contribution process that initially caused some confusion: the role of GitHub Pull Requests.</p>
+
+            <p>Coming from projects where GitHub PRs are the standard way to propose changes, I had also opened a Pull Request on the <a href="https://github.com/git/git/pull/1913" target="_blank" rel="noopener noreferrer">git/git mirror</a> repository containing my initial (bundled) commit. My thinking was that this might be needed for the final merge or for CI checks.</p>
+
+            <h2>Enter GitGitGadget</h2>
+
+            <p>Almost immediately after opening the PR, the automation kicked in. The <a href="https://gitgitgadget.github.io/" target="_blank" rel="noopener noreferrer">GitGitGadget</a> bot chimed in with a welcome message and some instructions. Notably, the template text added to the PR description itself contained a crucial piece of information:</p>
+
+            <div class="github-comment bot-message">
+                <p>"Thanks for taking the time to contribute to Git! Please be advised that the Git community does not use github.com for their contributions. Instead, we use a mailing list (git@vger.kernel.org) for code submissions, code reviews, and bug reports. Nevertheless, you can use GitGitGadget (...) to conveniently send your Pull Requests commits to our mailing list."</p>
+                <cite>- GitGitGadget Bot (PR Template)</cite>
+            </div>
+
+            <p>This was the first hint that my understanding might be slightly off. The bot also flagged issues with my commit message formatting (line length), reinforcing the specific standards expected by the project.</p>
+
+             <div class="github-comment bot-message">
+                <p>"There are issues in commit d798238:<br>
+                Documentation: update MyFirstContribution.adoc to fix outdated references<br>
+                Lines in the body of the commit messages should be wrapped between 60 and 76 characters..."</p>
+                <cite>- GitGitGadget Bot</cite>
+            </div>
+
+            <p>To proceed with using GitGitGadget (if I chose to), I needed permission. Johannes Schindelin (`dscho`) kindly granted it with a simple `/allow` command.</p>
+             <div class="github-comment">
+                <p><code>/allow</code></p>
+                
+                <cite>- Johannes Schindelin (dscho)</cite>
+            </div>
+
+
+            <h2>The Confusion: PR for Merging?</h2>
+
+            <p>Later, after realizing from the mailing list feedback (covered in the previous post) that I needed to resubmit my patch series broken down into smaller commits, I initially closed the first PR. This led to some helpful advice from Johannes about iterating:</p>
+
+             <div class="github-comment">
+                 
+                 <p>"@jayatheerthkulkarni in the future, please force-push to the same PR. No need to close and open PRs all the time."</p>
+                 <p>"To clarify: for different patch series, by all means use separate PRs. But for the same patch series, to keep every iteration together, it is paramount that you use the same PR. Only that way will GitGitGadget generate range-diffs, and reply to previous iterations, for example."</p>
+                 <cite>- Johannes Schindelin (dscho)</cite>
+            </div>
+
+            <p>This advice made sense in the context of using the PR/GitGitGadget workflow. However, since I had already submitted my patch via email using CLI tools, the fundamental question arose: *Why did I need the PR at all?* Was it still required for the merge process even if review happened on the list?</p>
+
+            <p>I voiced my confusion:</p>
+             <div class="github-comment">
+                 <p>"I think I'm a bit confused now, I actually sent PR for ease of merge with the source code, is this not the right method?"</p>
+                 <p>"I understand I can do the CI build with my own fork too but I opened a PR to merge it, do let me know if I'm doing something wrong because this is the first time I'm contributing to Git."</p>
+                 <cite>- My query</cite> 
+            </div>
+
+            <h2>The Clarification: Mailing List is King</h2>
+
+            <p>Johannes patiently clarified the situation, pointing back to the very text the bot had added to the PR:</p>
+
+             <div class="github-comment">
+                 <p>"@jayatheerthkulkarni the answer is in your own PR description...:<br><br>
+                 'Thanks for taking the time to contribute to Git! Please be advised that the Git community does not use github.com for their contributions. Instead, we use a mailing list (git@vger.kernel.org) for code submissions, code reviews, and bug reports. Nevertheless, you can use GitGitGadget (...) to conveniently send your Pull Requests commits to our mailing list.'"</p>
+                 <cite>- Johannes Schindelin (dscho)</cite>
+            </div>
+
+            <p>That's when the penny truly dropped. The Git project's primary workflow discussion, review, submission happens on the *mailing list*. GitHub PRs are *not* used for merging code in the way many other projects use them.</p>
+
+            <p>GitGitGadget is essentially a bridge. It allows developers who prefer the GitHub interface to manage their commits in a PR and then use commands like `/submit` to format and send those commits as patches to the mailing list. It's a convenience layer, an alternative way to interact with the mailing list workflow.</p>
+
+            <p>My summary of understanding:</p>
+             <div class="github-comment">
+                 <p>"Ok it all makes sense now... So to summarise I don't need a PR if I directly send a patch via the mailing list ( Which I have already ) and there is no need for GitHub if I'm perfectly fine with the CLI interface."</p>
+                 <cite>- My summary</cite>
+            </div>
+
+            <p>Johannes confirmed this:</p>
+             <div class="github-comment">
+                 <p>"Precisely. GitGitGadget is for those of us (me included) who are uncomfortable with sending mails via the CLI and trying to remember all the rules and conventions to get it right."</p>
+                 <cite>- Johannes Schindelin (dscho)</cite>
+            </div>
+
+            <h2>Takeaway: Know Your Workflow</h2>
+
+            <p>This was a valuable lesson. Having already sent my patches via the command line (`git format-patch`, `git send-email`), the GitHub Pull Request was entirely redundant for *my* process. It served no purpose in the Git project's merge workflow if I was using the traditional mailing list tools. While GitGitGadget and the PR interface are fantastic tools for those who prefer them, they are an *alternative* input method to the mailing list, not a required secondary step.</p>
+
+            <p>Understanding the central role of the mailing list is key for anyone contributing to Git. Since I was comfortable with the CLI tools for sending patches, I realized I didn't need to maintain parallel PRs. I closed the initial PR, now understanding its place (or lack thereof) in my specific contribution workflow.</p>
+
+            <p>With this workflow confusion cleared up, and the feedback about commit granularity received, the next step was to properly prepare and resubmit the corrected, split-up patch series to the mailing list.</p>
+
+        </article>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+       <p>Jayatheerth. Built with <span class="heart">♥</span>.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixing Outdated Docs in Git: My First Contribution - My Git Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles remain the same as the previous version */
+        .blog-post-content {
+            background-color: var(--color-bg-alt);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+        .blog-post-content h1 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--color-primary-light);
+            padding-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+        .blog-post-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary-dark);
+            font-size: 1.6rem;
+        }
+        .blog-post-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+             font-size: 1.2rem;
+        }
+        .blog-post-content p,
+        .blog-post-content li {
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .blog-post-content ul,
+        .blog-post-content ol {
+             margin-bottom: 1.5rem;
+             padding-left: 1.5rem;
+        }
+        .blog-post-content li {
+             margin-bottom: 0.5rem;
+        }
+        .blog-post-content strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+        .blog-post-content code {
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            margin: 0 0.1em;
+            font-size: 0.9em;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            color: #343a40;
+        }
+        .blog-post-content pre {
+             background-color: #f1f3f5;
+             padding: 1rem;
+             border-radius: var(--border-radius-md);
+             overflow-x: auto;
+             margin-bottom: 1.5rem;
+             box-shadow: var(--shadow-inner);
+        }
+        .blog-post-content pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .blog-post-content blockquote {
+            border-left: 4px solid var(--color-primary-light);
+            margin-left: 0;
+            padding-left: 1.5rem;
+            font-style: italic;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .email-quote {
+            border-left: 4px solid #a5f3fc;
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+        }
+        .email-quote p {
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+        .email-quote cite {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-top: 0.5rem;
+        }
+        .blog-post-content .meta-info {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
+        }
+         .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">Jayatheerth</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <!-- Add other links here if needed -->
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Blog List</a>
+        <article class="blog-post-content">
+            <h1>Fixing Outdated Docs in Git: My First Contribution</h1>
+            <p class="meta-info">
+                <span class="post-date">March 8, 2025 - March 12, 2025</span>
+            </p>
+
+            <p>Contributing to Git for GSoC seemed like a good goal, given my experience with related technologies and daily use of Git itself. As a first step, I decided to examine the documentation, starting with the guide aimed at new contributors: <code>MyFirstContribution.adoc</code>.</p>
+
+            <h2>Spotting Discrepancies</h2>
+
+            <p>While reading the guide and attempting to follow its examples, I encountered several inconsistencies. Some code snippets didn't compile against the current Git source, and certain instructions referred to outdated practices or interfaces. It seemed the document hadn't fully kept pace with the codebase evolution.</p>
+
+            <p>Since the GSoC program suggests starting with a small "microproject," updating this document felt like a suitable task. I sent an initial query to the <a href="https://lore.kernel.org/git/CA+rGoLc69R8qgbkYQiKoc2uweDwD10mxZXYFSY8xFs5eKSRVkA@mail.gmail.com/t/#u" target="_blank" rel="noopener noreferrer">Git mailing list</a> to gauge if this was a reasonable approach:</p>
+
+            <div class="email-quote">
+                <p>"Hey Git community, I'm Jay... I'm pretty new to open source... I went through the documentation... and found that there were several outdated elements and issues... I wanted to ask for advice if updating MyFirstContribution.adoc would be a good micro project or am I looking in the wrong way?"</p>
+                <cite>- My initial query (March 8)</cite>
+            </div>
+
+            <p>The responses provided useful context. Mahendra Dani shared links to the official microproject list and other relevant resources, which was helpful for orientation.</p>
+            
+            <p>Junio Hamano, the Git maintainer, also replied, offering clarification on the purpose and nature of microprojects within the Git community:</p>
+
+            <div class="email-quote">
+                <p>"All good suggestions, but we also welcome students who try to scratch their own itch, as long as it is small enough..."</p>
+                <p>"The primary objective for a micro-project is to get used to the workflow, i.e. working with the community mainly via this mailing list, how you explain your changes... how to work with those who gave you reviews..."</p>
+                <p>"...you do not need to ask for permission to start working on anything around here. 'Am I allowed to do X for my microproject' is not the question you want to ask; rather 'I see document X says A, B, and C, but A is outdated and I think it is better to phrase it like D. Would it be a suitable microproject material?' is something we can work with."</p>
+                <p>"To solicit such productive reaction from others, you'd need to be a bit more specific than 'I see flaws and want to improve'."</p>
+                <cite>- Junio C Hamano (March 8)</cite>
+            </div>
+
+            
+            <p>This feedback was instructive. It highlighted that the key wasn't seeking permission but rather identifying specific issues and proposing concrete fixes. It also emphasized that the microproject phase is primarily about learning the contribution process – communication via the mailing list, patch formatting, handling reviews – rather than just the technical change itself. The main takeaway was the need for specificity when discussing potential changes.</p>
+
+            <h2>Getting Specific</h2>
+
+            <p>Following that advice, I re-examined <code>MyFirstContribution.adoc</code> and the related code, carefully documenting the specific problems I'd found:</p>
+
+            <ol>
+                <li>
+                    <h3>Outdated Function Signature:</h3>
+                    <p>The documentation showed the example <code>cmd_psuh</code> function with this signature:</p>
+                    <pre><code>int cmd_psuh(int argc, const char **argv, const char *prefix);</code></pre>
+                    <p>However, the current definition in <code>builtin.h</code> includes an additional <code>struct repository *repo</code> parameter:</p>
+                    <pre><code>int cmd_psuh(int argc, const char **argv, const char *prefix, struct repository *repo);</code></pre>
+                    <p>This difference caused compilation errors when following the guide directly.</p>
+                </li>
+                <li>
+                    <h3>Missing `UNUSED` Macro Information:</h3>
+                    <p>The tutorial's code example didn't utilize all parameters passed to the function (e.g., <code>argc</code>, <code>argv</code>). This typically generates compiler warnings about unused parameters. The standard Git practice involves using the <code>UNUSED</code> macro (like <code>UNUSED(argv);</code>) to explicitly mark parameters as intentionally unused, but the guide didn't mention this technique.</p>
+                </li>
+                <li>
+                    <h3>Incorrect Config Function Reference:</h3>
+                    <p>The guide's "Implementation" section suggested using <code>git_config(...)</code> for handling configuration. In practice, particularly with the updated function signature requiring the <code>repo</code> struct, using <code>repo_config(...)</code> was necessary. While <code>git_config</code> exists as a wrapper, directly using <code>repo_config</code> seemed simpler and more appropriate for the tutorial's context.</p>
+                    <p><em>(Note: I initially overlooked that `git_config` acts as a wrapper, but `repo_config` still appeared more direct for this specific example.)</em></p>
+                </li>
+                 <li>
+                    <h3>Stale External Link:</h3>
+                    <p>The document linked to an external GitHub repository (<code>nasamuffin/git/tree/psuh</code>) intended as a complete reference implementation. This repository hadn't been updated recently and didn't align with current Git source code (e.g., the function signature change), causing confusion during comparison.</p>
+                </li>
+            </ol>
+
+            <p>I outlined these points and the proposed fixes in a detailed follow-up email to the mailing list:</p>
+             <div class="email-quote">
+                <p>"Got it, I’ll focus on being specific... Here’s what I found in 'MyFirstContribution.adoc'...<br/>
+                   1. Outdated Function Signature... Proposed Fix: Update the signature...<br/>
+                   2. Unused Parameters Handling Not Documented... Proposed Fix: Add a note... use the UNUSED macro...<br/>
+                   3. Incorrect Config Function Reference... mentions git_config(...), but... I had to use repo_config(...)... Proposed Fix: Update the doc to use repo_config(...)...<br/>
+                   4. Outdated Reference Link... Proposed Fix: Update the link... or clarify its status.<br/>
+                   I seek feedback as to if this mail is well specified..."
+                 </p>
+                <cite>- My detailed follow-up (March 9)</cite>
+            </div>
+
+
+            <h2>Confirmation and Additional Pointers</h2>
+
+            <p>This specific approach received positive confirmation. Karthik Nayak responded, agreeing with the assessment of the issues:</p>
+             <div class="email-quote">
+                <p>"Yes, this [function signature update] would be nice for users who try to follow the guide."</p>
+                <p>"This [UNUSED macro note] seems worthwhile too!"</p>
+                <p>"I think for new commands and also for new users, it is not worthwhile to get into how the `USE_THE_REPOSITORY_VARIABLE` macro works. So I think it'd be best to modify the documentation to use 'repo_config()' as you suggested here."</p>
+                <p>Regarding the external link: "This is a bit hard... easiest way... would be to raise a PR to Emily's repository..."</p>
+                <p>"I also see some more potential fixes... Remove git-mentoring@googlegroups.com... Rename 'Documentation/git-psuh.txt' -> 'Documentation/git-psuh.adoc'."</p>
+                
+                <p>"I think the changes you suggested would be great to have. Looking forward to the patche[s]... Thanks for fixing documentation, it is very important to keep them updated!"</p>
+                <cite>- Karthik Nayak (March 10)</cite>
+            </div>
+
+            
+            <p>This response confirmed that the identified issues were valid points for improvement. Karthik also provided practical advice on handling the external link and suggested two additional minor cleanups related to the documentation.</p>
+
+            <h2>Preparing for the Patch</h2>
+
+            <p>With the problems clearly defined, proposed solutions discussed, and confirmation received from the community, the next step was concrete: preparing the actual changes. This involved modifying the documentation file, formatting the changes as a patch, writing a clear commit message, and submitting it via the mailing list for review – the practical application of the workflow I was here to learn.</p>
+
+        </article>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+       <p>Jayatheerth. Built with <span class="heart">♥</span>.</p>
+    </div>
+</footer>
+
+</body>
+</html>

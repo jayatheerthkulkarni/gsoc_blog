@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Patch Submission & Learning About Commit Granularity - My Git Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .blog-post-content {
+            background-color: var(--color-bg-alt);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+        .blog-post-content h1 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--color-primary-light);
+            padding-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+        .blog-post-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary-dark);
+            font-size: 1.6rem;
+        }
+        .blog-post-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+             font-size: 1.2rem;
+        }
+        .blog-post-content p,
+        .blog-post-content li {
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .blog-post-content ul,
+        .blog-post-content ol {
+             margin-bottom: 1.5rem;
+             padding-left: 1.5rem;
+        }
+        .blog-post-content li {
+             margin-bottom: 0.5rem;
+        }
+        .blog-post-content strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+        .blog-post-content code {
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            margin: 0 0.1em;
+            font-size: 0.9em;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            color: #343a40;
+        }
+        .blog-post-content pre {
+             background-color: #f1f3f5;
+             padding: 1rem;
+             border-radius: var(--border-radius-md);
+             overflow-x: auto;
+             margin-bottom: 1.5rem;
+             box-shadow: var(--shadow-inner);
+        }
+        .blog-post-content pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .email-quote {
+            border-left: 4px solid #a5f3fc;
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+        }
+        .email-quote p {
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+        .email-quote cite {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-top: 0.5rem;
+        }
+         .commit-message {
+            background-color: #f8f9fa;
+            border: 1px solid var(--color-border);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .commit-message strong {
+            font-weight: bold;
+            color: #111827;
+        }
+        .blog-post-content .meta-info {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
+        }
+         .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">Jayatheerth</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Blog List</a>
+        <article class="blog-post-content">
+            <h1>First Patch Submission & Learning About Commit Granularity</h1>
+            <p class="meta-info">
+                <span class="post-date">March 12, 2025 - March 14, 2025</span>
+            </p>
+
+            <p>After identifying the specific issues in <code>MyFirstContribution.adoc</code> and getting confirmation from the <a href="https://lore.kernel.org/git/CA+rGoLc69R8qgbkYQiKoc2uweDwD10mxZXYFSY8xFs5eKSRVkA@mail.gmail.com/t/#u">mailing list</a> that they were worth fixing, it was time to move from discussion to action. This meant creating the actual changes, formatting them as a patch according to Git's standards, and submitting it for review.</p>
+
+            <h2>Bundling the Fixes: The First Attempt</h2>
+
+            <p>My approach was straightforward: address all the points discussed in the previous email thread in one go. I updated the function signature, added the note about the <code>UNUSED</code> macro, switched <code>git_config</code> to <code>repo_config</code>, removed the old mentoring list link, and renamed the example file from <code>.txt</code> to <code>.adoc</code> (plus related reference updates).</p>
+
+            <p>I bundled these changes into a <a href="https://lore.kernel.org/git/20250312081534.75536-1-jayatheerthkulkarni2005@gmail.com/t/#u">single commit</a>. Crafting the commit message felt important it's the explanation that lives alongside the code forever. I tried to summarize the key changes clearly:</p>
+
+            <div class="commit-message">
+                <strong>[PATCH] [GSOC] Update MyFirstContribution.adoc to current codebase</strong><br><br>
+                This updates MyFirstContribution.adoc to correct outdated information,
+                improve clarity for new contributors following the guide.<br><br>
+                Key changes:<br>
+                - Updated the function signature of `cmd_psuh` to match the current Git
+                  codebase, adding `struct repository *repo` as required.<br>
+                - Added a note on using the `UNUSED` macro to suppress compiler
+                  warnings for unused function parameters.<br>
+                - Replaced `git_config(...)` with `repo_config(...)` in documentation,
+                  aligning with modern Git practices.<br>
+                - Removed mention of the deprecated
+                  `git-mentoring@googlegroups.com`.<br>
+                - Renamed `Documentation/git-psuh.txt` to
+                  `Documentation/git-psuh.adoc` to follow the
+                  correct documentation format.<br>
+                - Updated `.txt` references to `.adoc`
+                  wherever applicable for consistency.<br><br>
+                These changes make it easier for
+                new contributors to follow the tutorial without
+                running into compilation errors or outdated references.<br><br>
+                Signed-off-by: K Jayatheerth <jayatheerthkulkarni2005@gmail.com>
+            </div>
+
+            <p>With the patch file generated (`git format-patch -1`), I sent it off to the Git mailing list using `git send-email`. Hitting send on your first patch feels like a significant step!</p>
+
+            <h2>The Feedback Arrives: Separate Your Concerns!</h2>
+
+            <p>The feedback loop started the next day with a reply from D. Ben Knoble. While acknowledging the value of the fixes, he immediately zeroed in on a fundamental aspect of the patch structure:</p>
+
+            <div class="email-quote">
+                <p>"I'm in a poor position to judge, but I suspect reviewing this commit would be easier if each bullet was a separate commit. See Documentation/SubmittingPatches [[separate-commits]] (HTML: https://git-scm.com/docs/SubmittingPatches#separate-commits)."</p>
+                <cite>- D. Ben Knoble (March 13)</cite>
+            </div>
+
+            <p>This was the core feedback: I had bundled too many logically distinct changes into one commit. While they all related to improving the same file, they addressed separate issues:</p>
+            <ul>
+                <li>Updating the function signature is one logical change.</li>
+                <li>Adding the <code>UNUSED</code> macro explanation is another.</li>
+                <li>Switching config functions is a third.</li>
+                <li>Removing the mailing list is a fourth.</li>
+                <li>Renaming the file and updating references is a fifth.</li>
+            </ul>
+            <p>Ben's point, referencing Git's own <a href="https://git-scm.com/docs/SubmittingPatches#separate-commits" target="_blank" rel="noopener noreferrer">SubmittingPatches guide</a>, was that each of these should ideally be its *own* commit. Why? It makes the review process significantly easier. Reviewers can look at each change in isolation, understand its specific purpose, and approve or suggest modifications for just that part. It also results in a much cleaner, more understandable project history. If someone later needs to know *why* the config function was changed, they can look at a commit focused solely on that, rather than wading through unrelated changes.</p>
+
+            <p>Ben also noted a minor wording issue in the documentation text I added, showing the level of detail reviewers often look at:</p>
+            <div class="email-quote">
+                <p>Regarding the line: "+The following line represents the function signature for any builtin/<filename.c> file that we add:"</p>
+                <p>"This line doesn't look necessary, or should at least replace the sentence immediately prior..."</p>
+                 <cite>- D. Ben Knoble (March 13)</cite>
+            </div>
+
+            <h2>Learning and Adjusting</h2>
+
+            <p>The feedback about separate commits immediately resonated. It was a fundamental part of the Git workflow that I hadn't fully internalized before submitting. Seeing it pointed out so clearly made perfect sense. My attempt to fix everything at once, while well-intentioned, wasn't aligned with best practices for collaborative development on a project like Git.</p>
+
+            <p>My reply acknowledged this directly:</p>
+             <div class="email-quote">
+                <p>"Actually that's an amazing point. I was thinking the same and will start a new patch with individual bullet patches within a thread as soon as possible."</p>
+                <p>"Ok I will once check and make sure the updated patch has this rectified [the wording issue]."</p>
+                <cite>- My reply to Ben (March 14)</cite>
+            </div>
+
+            <p>So, my very first patch submission wasn't accepted as is, but that was okay. The feedback wasn't about the *quality* of the fixes themselves, but about the *structure* and *presentation* a crucial lesson in maintainable contributions. This interaction was exactly the kind of practical learning the microproject phase is designed for.</p>
+
+            <p>The next task was clear: go back, break down the single commit into a logical series of smaller patches, refine the wording, and resubmit. The journey continued!</p>
+
+        </article>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+       <p>Jayatheerth. Built with <span class="heart">♥</span>.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microproject Review: Iterating on Patches and Commit Style - My Git Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .blog-post-content {
+            background-color: var(--color-bg-alt);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+        .blog-post-content h1 {
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--color-primary-light);
+            padding-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+        .blog-post-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary-dark);
+            font-size: 1.6rem;
+        }
+        .blog-post-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+             font-size: 1.2rem;
+        }
+        .blog-post-content p,
+        .blog-post-content li {
+            margin-bottom: 1rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+        }
+        .blog-post-content ul,
+        .blog-post-content ol {
+             margin-bottom: 1.5rem;
+             padding-left: 1.5rem;
+        }
+        .blog-post-content li {
+             margin-bottom: 0.5rem;
+        }
+        .blog-post-content strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+        .blog-post-content code {
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            margin: 0 0.1em;
+            font-size: 0.9em;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            color: #343a40;
+        }
+        .blog-post-content pre {
+             background-color: #f1f3f5;
+             padding: 1rem;
+             border-radius: var(--border-radius-md);
+             overflow-x: auto;
+             margin-bottom: 1.5rem;
+             box-shadow: var(--shadow-inner);
+        }
+        .blog-post-content pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+        }
+        .email-quote, .github-comment {
+            border-left: 4px solid #a5f3fc;
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+        }
+        .email-quote p, .github-comment p {
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+        .email-quote cite, .github-comment cite {
+            display: block;
+            text-align: right;
+            font-style: normal;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-top: 0.5rem;
+        }
+        .commit-message {
+            background-color: #f8f9fa;
+            border: 1px solid var(--color-border);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .commit-message strong {
+            font-weight: bold;
+            color: #111827;
+        }
+        .blog-post-content .meta-info {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
+        }
+         .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--color-primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+        }
+        .bot-message {
+             border-left-color: #fd7e14;
+             background-color: #fff3e0;
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">Jayatheerth</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Blog List</a>
+        <article class="blog-post-content">
+            <h1>Microproject Review: Iterating on Patches and Commit Style</h1>
+            <p class="meta-info">
+                <span class="post-date">March 15, 2025 - Ongoing</span>
+            </p>
+
+            <p>Based on initial feedback regarding commit granularity, the next step involved restructuring the proposed changes to <code>MyFirstContribution.adoc</code> into a logical patch series suitable for review according to Git project standards.</p>
+
+            <h2>Revised Submission: Patch Series Structure (V2/V3)</h2>
+
+            <p>The original single commit was decomposed using `git rebase -i` into three distinct patches, aiming for atomic changes:</p>
+            <ul>
+                <li>Patch 1/3: Focused on removing the defunct mentoring mailing list reference and adding a note about C language prerequisites.</li>
+                <li>Patch 2/3: Addressed the update of the `cmd_psuh` function signature to include `struct repository *repo` and introduced the `UNUSED` macro for unused parameters, including the corresponding change in `builtin.h`.</li>
+                <li>Patch 3/3: Concentrated on replacing the `git_config(...)` function calls with `repo_config(...)` in the documentation examples.</li>
+            </ul>
+            <p>(Note: Commit subjects evolved across versions V2 and V3 based on review).</p>
+
+            <p>This series was formatted using `git format-patch` and submitted to the mailing list. A corresponding GitHub PR was also opened, primarily intended for utilizing CI checks, although subsequent discussion clarified this wasn't strictly necessary for a mailing-list-based workflow.</p>
+
+            <h2>Technical Review and Style Conventions (Feedback on V2/V3)</h2>
+
+            <p>Junio Hamano provided detailed feedback on the V2/V3 submissions (<a href="https://lore.kernel.org/git/xmqqa59evffd.fsf@gitster.g/T/#t" target="_blank" rel="noopener noreferrer">viewable here</a>), primarily concerning commit message formatting and adherence to Git's coding and documentation conventions.</p>
+
+            <h3>Commit Message Structure:</h3>
+            <p>Specific guidance was given regarding the structure outlined in `Documentation/SubmittingPatches`:</p>
+            <div class="email-quote">
+                 <p>"The first line of the commit message should be a short description (50 characters is the soft limit...), and should skip the full stop. It is also conventional in most cases to prefix the first line with 'area: '..."</p>
+                 <p>Regarding a line break in the V2 subject line:</p>
+                 <p>"Do not do this. What you have on the e-mail 'Subject:' line is the first paragraph... You do not start your second paragraph at half-sentence..."</p>
+                 <cite>- Junio C Hamano (Review of V2)</cite>
+            </div>
+            <p>Key takeaways included the requirement for a concise, prefixed subject line (e.g., `doc: <description>` or `MyFirstContribution: <description>`) without a trailing period, clearly separated from the commit body by a blank line.</p>
+
+            <h3>Documentation Formatting:</h3>
+            <p>A line added in Patch 1/3 exceeded the conventional line length for documentation:</p>
+             <div class="email-quote">
+                <p>"...this new line is way overly long. Can you wrap it at around 70 chars..."</p>
+                <cite>- Junio C Hamano (Review of V2 Patch 1/3)</cite>
+            </div>
+            <p>Maintaining reasonable line lengths (typically ~70-76 characters) is important for readability across different display environments.</p>
+
+            <h3>Clarity of Commit Justification (V3 Patch 2/3):</h3>
+            <p>The rationale for updating the function signature required clearer justification than "for better compatibility":</p>
+             <div class="email-quote">
+                <p>"You want to be a bit stronger than 'better compatibility' here..."</p>
+                <p>"Since 9b1cb507 (builtin: add a repository parameter for builtin functions, 2024-09-13), a built-in implementation like cmd_psuh is called with a pointer to a 'struct repository'; adjust the examples to match the current practice."</p>
+                 <cite>- Junio C Hamano (Review of V3 Patch 2/3)</cite>
+            </div>
+             <p>Effective commit messages should precisely explain the 'why' behind a change, often linking it to specific previous commits or architectural shifts in the codebase.</p>
+
+
+            <h3>Coding Style in Examples (V3 Patch 3/3):</h3>
+             <p>The use of C++ style comments (`//`) within a C code example was flagged:</p>
+             <pre><code>#include "repository.h"  // Required for repo_config_get_string_tmp()</code></pre>
+             <div class="email-quote">
+                 <p>"I do not think we updated Coding Guidelines to allow // comments."</p>
+                 <cite>- Junio C Hamano (Review of V3 Patch 3/3)</cite>
+             </div>
+             <p>This highlighted the need for examples within documentation to adhere to the project's primary coding style (C89, using `/* C-style comments */`).</p>
+
+            <h2>Refinement and Further Discussion (V4)</h2>
+
+            <p>A V4 patch series was prepared incorporating the feedback on commit messages, line wrapping, and comment style. The C++ style comment was removed from the example code.</p>
+
+            <p>This led to further discussion regarding the explanation of `#include` directives in tutorials. Junio suggested that simply adding headers in examples isn't as beneficial as explaining *why* they are necessary within the preceding text, especially for a tutorial:</p>
+
+             <div class="email-quote">
+                <p>"...if the reason why you added the comment was 'this is a tutorial'... I would imagine that it would help readers to say why a particular header is needed... From a quick look at the patch, it seems that the updated text says what the change did (i.e. add a header)... without saying why the addition is necessary?"</p>
+                <cite>- Junio C Hamano (Follow-up on comments/explanation)</cite>
+            </div>
+
+            <p>This presented a question of scope and consistency. The existing document lacked detailed explanations for most header inclusions. Adding detailed reasoning only for the headers modified in this patch series could create inconsistency. The options considered were:</p>
+            <ol>
+                <li>Address the formatting/style issues in the current V4 patches and defer consistent, detailed header explanations across the document to a potential separate effort.</li>
+                <li>Modify the current V4 Patch 3/3 to include a detailed explanation specifically for `repository.h`.</li>
+                <li>Maintain the current minimal explanation in V4, aligning with the existing style of the document.</li>
+            </ol>
+             <div class="email-quote">
+                 <p>"...in the previous documentation itself the header files didn't have very detailed explanation. If I do a detailed description... the documentation will look inconsistent."</p>
+                 <p>"I could do three things... 1. ...start working on a second microproject... 2. I could present a change in this current patch... 3. We can just leave this as is."</p>
+                 <cite>- My response outlining options</cite>
+             </div>
+
+            <h2>Current Technical Status</h2>
+
+            <p>The discussion regarding the optimal level of detail for explaining header includes within this specific tutorial context remains open pending further direction. A follow-up email was sent to seek clarification on proceeding with one of the outlined options.</p>
+
+            <p>The review process for this microproject involved multiple iterations, focusing significantly on adherence to Git's established standards for commit messages, documentation formatting, coding style within examples, and the clarity of technical justifications. This underscores the importance of precise communication and formatting conventions in maintaining a large, collaborative codebase like Git.</p>
+
+        </article>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+       <p>Jayatheerth. Built with <span class="heart">♥</span>.</p> 
+    </div>
+</footer>
+
+</body>
+</html>
