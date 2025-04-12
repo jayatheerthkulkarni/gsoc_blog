@@ -1,17 +1,18 @@
-/* style.css - "Drool-Worthy" Edition */
+/* style.css - "Drool-Worthy" Edition - Final Adjustments */
 
 /* --- CSS Variables for Theming --- */
 /* Standard */
 ::selection {
     color: white;
     background-color: black;
-  }
-  
-  /* For older Firefox compatibility (optional nowadays) */
-  ::-moz-selection {
+}
+
+/* For older Firefox compatibility (optional nowadays) */
+::-moz-selection {
     color: white;
     background-color: black;
-  }
+}
+
 :root {
     --font-primary: 'Inter', sans-serif;
     --font-secondary: 'Poppins', sans-serif;
@@ -74,8 +75,16 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--color-text);
 }
 
-h1 { font-size: 2.5rem; } /* 40px */
-h2 { font-size: 1.75rem; } /* 28px */
+h1 {
+    font-size: 2.5rem;
+}
+
+/* 40px */
+h2 {
+    font-size: 1.75rem;
+}
+
+/* 28px */
 
 a {
     color: var(--color-primary);
@@ -91,7 +100,8 @@ a:hover {
 /* --- Container --- */
 .container {
     width: 100%;
-    max-width: 1024px; /* Wider container */
+    max-width: 1024px;
+    /* Wider container */
     margin-left: auto;
     margin-right: auto;
     padding-left: 1.5rem;
@@ -103,10 +113,12 @@ a:hover {
     background-color: var(--color-dark-bg);
     padding: 1rem 0;
     box-shadow: var(--shadow-md);
-    position: sticky; /* Make navbar sticky */
+    position: sticky;
+    /* Make navbar sticky */
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle border */
 }
 
 .navbar .container {
@@ -117,12 +129,15 @@ a:hover {
 
 .navbar .logo {
     font-size: 1.75rem;
-    font-weight: 700; /* Bolder logo */
+    font-weight: 700;
+    /* Bolder logo */
     color: var(--color-bg-alt);
     text-decoration: none;
-    letter-spacing: -0.5px; /* Slightly tighter spacing */
+    letter-spacing: -0.5px;
+    /* Slightly tighter spacing */
     transition: color var(--transition-speed) var(--transition-ease);
 }
+
 .navbar .logo:hover {
     text-decoration: none;
     color: var(--color-primary-light);
@@ -139,12 +154,14 @@ a:hover {
     font-size: 1rem;
     font-weight: 500;
     text-decoration: none;
-    padding: 0.5rem 0; /* Vertical padding for better hover */
+    padding: 0.5rem 0;
+    /* Vertical padding for better hover */
     position: relative;
     transition: color var(--transition-speed) var(--transition-ease);
 }
 
-.navbar .nav-links a::after { /* Underline effect */
+.navbar .nav-links a::after {
+    /* Underline effect */
     content: '';
     position: absolute;
     width: 0;
@@ -156,26 +173,31 @@ a:hover {
 }
 
 .navbar .nav-links a:hover {
-    color: var(--color-bg-alt); /* Brighter hover */
+    color: var(--color-bg-alt);
+    /* Brighter hover */
     text-decoration: none;
 }
 
 .navbar .nav-links a:hover::after {
-    width: 100%; /* Expand underline on hover */
+    width: 100%;
+    /* Expand underline on hover */
 }
 
 /* --- Main Content Area --- */
 main {
     flex-grow: 1;
-    padding-top: 4rem; /* More space below sticky nav */
+    padding-top: 4rem;
+    /* More space below sticky nav */
     padding-bottom: 5rem;
 }
 
 main h1 {
     text-align: center;
     margin-bottom: 3.5rem;
-    font-weight: 700; /* Bolder main heading */
-    color: #111827; /* Slightly darker heading color */
+    font-weight: 700;
+    /* Bolder main heading */
+    color: #111827;
+    /* Slightly darker heading color */
     letter-spacing: -0.5px;
 }
 
@@ -183,21 +205,24 @@ main h1 {
 .blog-post-list {
     display: grid;
     /* Explicitly define columns for better control */
-    grid-template-columns: repeat(1, 1fr); /* Start with 1 column */
-    gap: 2.5rem; /* Increased gap */
+    grid-template-columns: repeat(1, 1fr);
+    /* Start with 1 column */
+    gap: 2.5rem;
+    /* Increased gap */
 }
 
 /* Media query for wider screens */
 @media (min-width: 768px) {
     .blog-post-list {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on medium screens */
     }
 }
 
 @media (min-width: 1024px) {
     .blog-post-list {
-         /* Keep 2 columns or go to 3 if content allows */
-         /* grid-template-columns: repeat(3, 1fr); */
+        /* Keep 2 columns or go to 3 if content allows */
+        /* grid-template-columns: repeat(3, 1fr); */
     }
 }
 
@@ -205,30 +230,34 @@ main h1 {
 /* --- Blog Card Styling --- */
 .blog-card {
     background-color: var(--color-bg-alt);
-    border-radius: var(--border-radius-lg); /* Softer radius */
+    border-radius: var(--border-radius-lg);
+    /* Softer radius */
     box-shadow: var(--shadow-md);
     overflow: hidden;
     transition: transform var(--transition-speed) var(--transition-ease),
-                box-shadow var(--transition-speed) var(--transition-ease);
-    display: flex; /* Needed for link behavior */
-    position: relative; /* For accent bar positioning */
+        box-shadow var(--transition-speed) var(--transition-ease);
+    display: flex;
+    /* Needed for link behavior */
+    position: relative;
+    /* For accent bar positioning */
 }
 
 .blog-card:hover {
-    transform: translateY(-6px) scale(1.015); /* More pronounced hover effect */
+    transform: translateY(-6px) scale(1.015);
+    /* More pronounced hover effect */
     box-shadow: var(--shadow-xl);
 }
 
-/* Make the entire card clickable (link) */
 .blog-card a {
     display: flex;
     flex-direction: column;
-    padding: 2rem 2rem 1.5rem 2rem; /* Adjusted padding */
+    padding: 2.25rem; /* Adjust as needed */
     text-decoration: none;
     color: inherit;
     flex-grow: 1;
-    position: relative; /* For pseudo elements */
-    z-index: 1; /* Ensure content is above ::before */
+    position: relative;
+    z-index: 1;
+    justify-content: center; /* Try centering the content vertically */
 }
 
 .blog-card a:hover {
@@ -241,22 +270,28 @@ main h1 {
     top: 0;
     left: 0;
     width: 100%;
-    height: 5px; /* Thickness of the bar */
-    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); /* Gradient accent */
+    height: 5px;
+    /* Thickness of the bar */
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    /* Gradient accent */
     transition: height var(--transition-speed) var(--transition-ease);
 }
 
 .blog-card:hover .card-accent-bar {
-    height: 8px; /* Slightly thicker on hover */
+    height: 8px;
+    /* Slightly thicker on hover */
 }
 
 .blog-card .card-title {
-    font-size: 1.5rem; /* Slightly larger title */
+    font-size: 1.5rem;
+    /* Slightly larger title */
     color: var(--color-text);
-    margin-bottom: 0.5rem; /* Less space below title */
+    margin-bottom: 0.75rem;
+    /* More space below title */
     font-weight: 600;
     line-height: 1.4;
-    margin-top: 1rem; /* Space below accent bar */
+    margin-top: 1rem;
+    /* Space below accent bar */
     transition: color var(--transition-speed) var(--transition-ease);
 }
 
@@ -265,20 +300,23 @@ main h1 {
 }
 
 .blog-card .card-meta {
-    font-size: 0.875rem; /* 14px */
+    font-size: 0.875rem;
+    /* 14px */
     color: var(--color-text-muted);
-    margin-bottom: 1rem;
-    font-weight: 500; /* Slightly bolder meta */
+    margin-bottom: 1.25rem;
+    /* More space below meta */
+    font-weight: 500;
+    /* Slightly bolder meta */
 }
 
 .blog-card .card-excerpt {
-    font-size: 1rem; /* 16px */
-    color: var(--color-text-muted); /* Use muted color for excerpt too */
-    flex-grow: 1;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    flex-grow: 1; /* Keep this to take up available space */
     margin-bottom: 0;
-    line-height: 1.7; /* Ensure good readability */
+    line-height: 1.7;
+    margin-top: auto; /* Push the excerpt to the bottom */
 }
-
 /* --- Footer Styling --- */
 footer {
     background-color: var(--color-dark-bg);
@@ -305,10 +343,27 @@ footer .heart {
 
 /* Heartbeat Animation */
 @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    10%, 30% { transform: scale(0.9); }
-    20%, 40%, 60%, 80% { transform: scale(1.1); }
-    50%, 70% { transform: scale(1.05); }
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    10%,
+    30% {
+        transform: scale(0.9);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: scale(1.1);
+    }
+
+    50%,
+    70% {
+        transform: scale(1.05);
+    }
 }
 
 /* --- Optional: Subtle Scrollbar Styling (Webkit) --- */
@@ -321,10 +376,14 @@ footer .heart {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #ced4da; /* Lighter gray thumb */
+    background-color: #ced4da;
+    /* Lighter gray thumb */
     border-radius: 10px;
-    border: 2px solid var(--color-bg); /* Creates padding around thumb */
+    border: 2px solid var(--color-bg);
+    /* Creates padding around thumb */
 }
+
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #adb5bd; /* Darker on hover */
+    background-color: #adb5bd;
+    /* Darker on hover */
 }
