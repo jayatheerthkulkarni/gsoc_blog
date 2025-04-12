@@ -195,7 +195,7 @@ git add 'f*'      # Attempt to add files matching the wildcard</code></pre>
 
             <p>While the optimization theory explained the observed behavior, further digging and debugging (adding `fprintf` checks) revealed a different picture. The issue seemed to originate earlier, during the *parsing* of the pathspec itself, specifically within the <code>init_pathspec_item</code> function in <code>pathspec.c</code>.</p>
 
-            <p>As detailed in a <a href="https://lore.kernel.org/git/CA+rGoLfjU15a5X0K+jN=n32W2y0k82+Yv1E_6_i479e+n8=X-A@mail.gmail.com/" target="_blank" rel="noopener noreferrer">follow-up email</a>:</p>
+            <p>As detailed in a follow-up email</p>
             <div class="email-quote">
                 <p>"...debugging output confirmed that the core issue seems to originate earlier, during the pathspec parsing phase. It revealed that when processing the input string 'f*' (without any explicit magic like :(glob)), the resulting pathspec_item.magic field does not have the [PATHSPEC_GLOB flag set]..."</p>
                 <p>"Looking at the logic in init_pathspec_item, it seems the PATHSPEC_GLOB flag is generally only added to item->magic if: a) The user explicitly uses a magic prefix like :(glob)f*. b) A global setting like GIT_GLOB_PATHSPECS_ENVIRONMENT is active."</p>
