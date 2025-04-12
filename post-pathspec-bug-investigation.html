@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Git Internals: Fixing Pathspec Ambiguity in `git add`</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="./blog_style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,19 +21,17 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                
             </ul>
         </nav>
     </div>
 </header>
 
 <main>
+    <div class="container">
         <a href="index.html" class="back-link">← Back to Blog List</a>
         <article class="blog-post-content">
-           
             <h1>Git Internals: Fixing Pathspec Ambiguity in <code>git add</code></h1>
             <p class="meta-info">
-               
                 <span class="post-date">April 12, 2025</span>
             </p>
 
@@ -107,7 +103,7 @@ index cbd82be6c9..85cc08f4fc 100644
 @@ -519,7 +519,8 @@ static int do_match_pathspec(struct index_state *istate,
  		    ( exclude && !(ps->items[i].magic & PATHSPEC_EXCLUDE)))
  			continue;
- 
+
 -		if (seen && seen[i] == MATCHED_EXACTLY)
 +		if (seen && seen[i] == MATCHED_EXACTLY &&
 +		    ps->items[i].nowildcard_len == ps->items[i].len)
@@ -134,7 +130,7 @@ index cbd82be6c9..85cc08f4fc 100644
 @@ -519,7 +519,8 @@ static int do_match_pathspec(struct index_state *istate,
  		    ( exclude && !(ps->items[i].magic & PATHSPEC_EXCLUDE)))
  			continue;
- 
+
 -		if (seen && seen[i] == MATCHED_EXACTLY)
 +		// Only skip if it was an exact match AND the pathspec item
 +		// is a literal (has no wildcards).
