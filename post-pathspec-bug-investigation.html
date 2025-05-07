@@ -7,11 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./blog_style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./blog_style.css">
 </head>
 <body>
 
@@ -27,7 +25,7 @@
 </header>
 
 <main>
-    <div class="container content-container">
+    <div class="container">
         <a href="index.html" class="back-link">← Back to Blog List</a>
         <article class="blog-post-content">
             <h1>Git Internals: Fixing Pathspec Ambiguity in <code>git add</code></h1>
@@ -35,67 +33,53 @@
                 <span class="post-date">April 12, 2025 - Updated May 5, 2025</span>
             </p>
 
-            <p>Sometimes, the simplest Git commands hide surprising complexity. A recent dive into a peculiar `git add` behavior turned into a fascinating exploration of pathspec matching internals, collaboration on the Git mailing list, and ultimately, a satisfying fix. This journey involved multiple iterations, detailed reviews, and a deep dive into Git's testing and commit conventions.</p>
-
-            <p>This post walks through the journey of diagnosing and patching a bug where `git add` would disregard a wildcard if a filename matched the wildcard pattern literally, and the crucial feedback that shaped the final contribution.</p>
+            <p>Sometimes, the simplest Git commands hide surprising complexity. A recent dive into a peculiar <code>git add</code> behavior turned into a fascinating exploration of pathspec matching internals, collaboration on the Git mailing list, and ultimately, a satisfying fix.</p>
 
             <h2>The Unexpected Behavior</h2>
+
             <p>The issue was first reported by Piotr Siupa on the Git mailing list. He provided a crystal-clear minimal test case:</p>
             <pre><code>git init
-touch 'foo' 'f*'  # Create two files: 'foo' and one literally named 'f*'
-git add 'f*'      # Attempt to add files matching the wildcard</code></pre>
-            <p>Intuitively, one would expect `git add 'f*'` to stage both `foo` and the literal `f*` file. However, only the literal `f*` file was staged on the first run. Running the exact same `git add 'f*'` command a second time would then correctly stage `foo`.</p>
-            <p>This inconsistency pointed towards a subtle bug within Git's handling of pathspecs during the `add` operation.</p>
+touch 'foo' 'f*'
+git add 'f*'</code></pre>
+
+            <p>Intuitively, one would expect both <code>foo</code> and <code>f*</code> to be staged. However, only <code>f*</code> was staged on the first run. Running the same command again would then correctly stage <code>foo</code>.</p>
 
             <h2>Initial Investigation: The <code>MATCHED_EXACTLY</code> Hypothesis</h2>
-            <p>My initial dive into the `git add` codebase (primarily `builtin/add.c`) suggested the problem might lie in an optimization within `do_match_pathspec`:</p>
-            <pre><code class="language-c">// Inside the loop within do_match_pathspec
-if (seen && seen[i] == MATCHED_EXACTLY)
-    continue; // Skip checking this pathspec item further</code></pre>
-            <p>The theory was that an exact match with the literal `f*` file caused the pathspec `'f*'` to be marked as `MATCHED_EXACTLY`, prematurely skipping the wildcard match for `foo`.</p>
 
-            <h2>Refining the Diagnosis: Pathspec Magic vs. Wildcards</h2>
-            <p>Further debugging revealed that the root cause was more nuanced. Git distinguishes between pathspecs with explicit "magic" flags (like `PATHSPEC_GLOB`) and those that merely contain wildcard characters. Just providing `'f*'` doesn't automatically set `PATHSPEC_GLOB` unless explicitly requested (e.g., `:(glob)f*`).</p>
+            <p>My initial dive into <code>builtin/add.c</code> suggested the issue was with:</p>
+            <pre><code>if (seen && seen[i] == MATCHED_EXACTLY)
+    continue;</code></pre>
+
+            <p>This indicated that a literal match like <code>f*</code> was causing premature skipping of the glob match.</p>
+
+            <h2>Refining the Diagnosis</h2>
+
+            <p>Further debugging revealed that Git distinguishes between pathspecs with wildcard magic and those that merely contain wildcard characters. Unless explicitly written as <code>:(glob)f*</code>, the pattern isn't treated as a glob.</p>
+
             <div class="email-quote">
-                 <p>This highlighted a key aspect of Git's design: pathspec interpretation relies heavily on explicit flags rather than solely inferring behavior from the pattern string itself.</p>
-                 <cite>- My realization during debugging</cite>
+                <p>This highlighted a key aspect of Git's design: pathspec interpretation relies heavily on explicit flags rather than solely inferring behavior from the pattern string itself.</p>
+                <cite>- My realization during debugging</cite>
             </div>
 
-            <h2>The Breakthrough: Guidance from Jeff King (<code>nowildcard_len</code>)</h2>
-            <p>Jeff King (Peff) provided crucial guidance, pointing towards the `nowildcard_len` field in `struct pathspec_item`. This field indicates if a pathspec contains any wildcards. If `nowildcard_len == len` (total length), the pathspec is a literal.</p>
-            <p>Peff suggested modifying the optimization check:</p>
-            <div class="email-quote">
-                <p>"I think you're still on the right track... compare [nowildcard_len] to 'len' to see if it does any globbing at all... So something like this probably works:"</p>
-                <pre><code class="language-diff">diff --git a/dir.c b/dir.c
---- a/dir.c
-+++ b/dir.c
-@@ -519,7 +519,8 @@ static int do_match_pathspec(struct index_state *istate,
- 		    ( exclude && !(ps->items[i].magic & PATHSPEC_EXCLUDE)))
- 			continue;
- 
--		if (seen && seen[i] == MATCHED_EXACTLY)
-+		if (seen && seen[i] == MATCHED_EXACTLY &&
-+		    ps->items[i].nowildcard_len == ps->items[i].len)
- 			continue;</code></pre>
-                 <cite>- Jeff King (Peff)</cite>
-            </div>
-            <p>This refined check ensures the optimization only applies to true literals, allowing pathspecs with wildcards (even if they also match a filename literally) to continue matching other files.</p>
+            <h2>The Breakthrough: Jeff King's <code>nowildcard_len</code> Advice</h2>
 
-            <h2>The Fix and Initial Patch Submission</h2>
-            <p>Based on this, the fix was incorporated into `dir.c`. The initial patch was submitted to the mailing list, addressing the core logic. You can see the first version of this patch discussion (including the bug report) starting <a href="https://lore.kernel.org/git/CA+rGoLe=A61CRNUztHvDpPTUxW1TobS4vknyF3OGTEP0imnwjQ@mail.gmail.com/T/#t" target="_blank" rel="noopener noreferrer">here</a>.</p>
+            <p>Jeff King suggested checking whether a pathspec is a literal by comparing <code>nowildcard_len</code> to the full length:</p>
+            <pre><code class="language-diff">+       if (seen && seen[i] == MATCHED_EXACTLY &&
++           ps->items[i].nowildcard_len == ps->items[i].len)
++           continue;</code></pre>
 
-            <h2>Submitting Patch V2: Adding a Robust Test Suite</h2>
-            <p>While the initial fix addressed the logic, a crucial part of any Git contribution is thorough testing. For Patch V2, a new test script, `t/t6137-pathspec-wildcards-literal.sh`, was created. This script aimed to:</p>
-            <ul>
-                <li>Verify the fix for `git add`.</li>
-                <li>Ensure consistent behavior for `git commit` pathspecs, as the `dir.c` logic is shared.</li>
-                <li>Test various wildcard characters (`*`, `?`, `[abc]`) and their literal counterparts (`\*`, `\?`, `\[abc]`).</li>
-                <li>Cover edge cases with filenames containing multiple wildcards (e.g., `f**`, `foo*bar`).</li>
-            </ul>
-            <p>The test suite uses the `FUNNYNAMES` prerequisite, as it involves filenames with special characters, making it skip on platforms like Windows where such filenames might not be supported.</p>
-            <pre><code class="language-shell"># Excerpt from t/t6137-pathspec-wildcards-literal.sh
-test_expect_success 'check f* wildcard in git add' '
-    reset_git_repo && # Helper function to setup a clean state
+            <p>This ensured only true literals skipped further matching.</p>
+
+            <h2>The Fix and Patch Submission</h2>
+
+            <p>The fix was submitted to the mailing list, and discussion started <a href="https://lore.kernel.org/git/CA+rGoLe=A61CRNUztHvDpPTUxW1TobS4vknyF3OGTEP0imnwjQ@mail.gmail.com/T/#t" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+            <h2>Patch V2: Test Suite</h2>
+
+            <p>A robust test script <code>t/t6137-pathspec-wildcards-literal.sh</code> was added to verify behavior. It used the <code>FUNNYNAMES</code> prerequisite due to wildcard-containing filenames.</p>
+
+            <pre><code>test_expect_success 'check f* wildcard in git add' '
+    reset_git_repo &&
     git add "f*" &&
     cat >expected_files <<EOF &&
 f*
@@ -105,118 +89,59 @@ foo*bar
 EOF
     git ls-files >actual_files &&
     test_cmp expected_files actual_files
-'
-
-test_expect_success 'check f\* literal in git add' '
-    reset_git_repo &&
-    git add "f\*" &&
-    cat >expected_files <<EOF &&
-f*
-EOF
-    git ls-files >actual_files &&
-    test_cmp expected_files actual_files
 '</code></pre>
-            <p>You can view the [PATCH v2] submission, including the full test suite, <a href="https://lore.kernel.org/git/20250422160558.133003-1-jayatheerthkulkarni2005@gmail.com/T/#u" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
-            <h2>In-Depth Review: Feedback from Junio Hamano</h2>
-            <p>Junio Hamano, the Git project maintainer, provided detailed feedback on Patch V2. This review was incredibly insightful, covering not just the code, but also crucial aspects of contributing to Git, like commit message conventions and test script best practices.</p>
+            <h2>Review: Feedback from Junio Hamano</h2>
 
-            <h3>Commit Message Crafting</h3>
-            <p>Junio emphasized the standard way to compose commit messages in the Git project:</p>
+            <h3>Commit Message Style</h3>
             <div class="email-quote">
-                <p>"The usual way to compose a log message of this project is to
- - Give an observation on how the current system work in the present
-   tense... and discuss what you perceive as a problem in it.
- - Propose a solution (optional...).
- - Give commands to the codebase to 'become like so'."</p>
-                <p>For the subject line: "Subject: dir.c: literal match with wildcard in pathspec should still glob or something? 'Fix' implies something may have been broken... but otherwise it does not say anything about what was wrong and how it was improved."</p>
-                 <cite>- Junio C Hamano</cite>
-            </div>
-            <p>He suggested a more descriptive problem statement for the commit body, like:</p>
-            <div class="email-quote">
-                 <p>"With a path with wildcard characters, e.g. 'f*o', exists in the
+                <p>"With a path with wildcard characters, e.g. 'f*o', exists in the
 working tree, 'git add -- 'f*o'' stops after happily finding
 that there is 'f*o' and adding it to the index, without
 realizing there may be other paths, e.g. 'foooo', that may match
 the given pathspec."</p>
-                 <p>"This is because dir.c:do_match_pathspec() disables further
-matches with pathspec when it finds an exact match."</p>
-                 <cite>- Junio C Hamano (suggested commit message excerpt)</cite>
+                <cite>- Junio C Hamano</cite>
             </div>
-            <p>The feedback also noted that explanations like "Use 'f\*' to add the literal" are more for documentation or user guides than commit messages, which should focus on the 'why' of the change for future developers reading `git log`.</p>
 
-            <h3>Test Script Style</h3>
-            <p>Junio provided several pointers for the test script (`t/t6137-pathspec-wildcards-literal.sh`):</p>
+            <h3>Test Script Suggestions</h3>
             <ul>
-                <li>**Indentation:** Use tabs (HT), not spaces, for indentation in shell scripts, per `Documentation/CodingGuidelines`.</li>
-                <li>**Setup/Teardown:** Avoid `cd`ing into a test directory in the `setup` and `cd ..` in a cleanup function if tests might fail mid-way. Instead, run tests in subshells to isolate them:
-                    <pre><code>test_expect_success 'add wildcard *' '
-    git init test-asterisk &&
-    (
-        cd test-asterisk &&
-        prepare_test_files &&
-        git add "*" &&
-        # ... rest of the test
-    )
-'</code></pre></li>
-                <li>**HERE-DOCs:** Use `<<-EOF` (with a dash) to strip leading tabs and quote the delimiter (`\EOF` or `'EOF'`) to take the text literally.</li>
-                <li>**Clarity:** Avoid unnecessary `rm -rf` if `rm -f` suffices.</li>
+                <li>Use tabs, not spaces, for indentation.</li>
+                <li>Prefer subshells over <code>cd</code> for isolation.</li>
+                <li>Use <code>&lt;&lt;-EOF</code> with quoted delimiters.</li>
             </ul>
 
-            <h3>"Mentored-by" vs. "Helped-by"</h3>
-            <p>An interesting point was about trailers. Junio clarified:</p>
+            <h3>Trailer Tags</h3>
             <div class="email-quote">
-                <p>"Unless this is part of a project done as some mentorship program
-like GSoC and Outreachy, Helped-by: would be more appropriate. It
-is not like Peff is assigned as your mentor for working on this
-particular 'fix wildcard' project, is it?"</p>
-                 <cite>- Junio C Hamano</cite>
+                <p>"Helped-by: would be more appropriate unless this is part of a mentorship program like GSoC."</p>
+                <cite>- Junio C Hamano</cite>
             </div>
-            <p>This distinction is subtle but important for correctly attributing contributions.</p>
 
-            <h2>Iterating on Feedback: Refining the Commit and Addressing Style</h2>
-            <p>Armed with this comprehensive feedback, the next step was to prepare a new version of the patch. The commit message was revised significantly based on Junio's suggestions:</p>
-            <div class="email-quote">
-                <p><strong>New Subject:</strong> `dir.c: literal match with wildcard in pathspec should still glob`</p>
-                <p><strong>New Body Excerpt:</strong></p>
-                <p>With a path with wildcard characters, e.g. 'f*o', exists in the
-working tree, "git add -- 'f*o'" stops after happily finding
-that there is 'f*o' and adding it to the index, without
-realizing there may be other paths, e.g. 'foooo', that may match
-the given pathspec.</p>
-                <p>This is because dir.c:do_match_pathspec() disables further
-matches with pathspec when it finds an exact match.</p>
-                <p>Reported-by: piotrsiupa <piotrsiupa@gmail.com><br>
-Helped-by: Jeff King <peff@peff.net><br>
-Signed-off-by: K Jayatheerth <jayatheerthkulkarni2005@gmail.com></p>
-                <cite>- My revised commit message (from the subsequent patch submission)</cite>
-            </div>
-            <p>The test script was also updated to use subshells for each test case and incorporate other styling suggestions. The "Mentored-by" tag was changed to "Helped-by". You can see this refined patch <a href="https://lore.kernel.org/git/20250503060713.30374-1-jayatheerthkulkarni2005@gmail.com/T/#u" target="_blank" rel="noopener noreferrer">here</a>.</p>
+            <h2>Patch Refinement</h2>
 
-            <h3>The Importance of Details: Code Formatting</h3>
-            <p>Even seemingly minor details like code alignment in diffs matter. A follow-up discussion with Junio clarified that the diff alignment issue I observed was due to my editor's tab settings (4 spaces vs. the standard 8-space tab width often assumed for Git patches). This highlighted the need to be mindful of editor configurations when preparing patches to ensure they render correctly for reviewers.</p>
+            <p>Incorporated all style and message feedback. The final patch can be viewed <a href="https://lore.kernel.org/git/20250503060713.30374-1-jayatheerthkulkarni2005@gmail.com/T/#u" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+            <h3>Tab Width Matters</h3>
+
             <div class="email-quote">
                 <p>"Perhaps because you are telling your editor or terminal that your tab, unlike everybody else's, is 4-space wide or something?"</p>
-                <cite>- Junio C Hamano, on diff alignment</cite>
+                <cite>- Junio C Hamano</cite>
             </div>
 
-            <h2>Key Takeaways Updated</h2>
+            <h2>Key Takeaways</h2>
             <ul>
-                <li>Pathspec matching in Git has subtle layers involving literal matching, wildcard expansion, and explicit "magic" flags.</li>
-                <li>Seemingly simple optimizations can have unintended consequences in edge cases.</li>
-                <li>The Git mailing list is an invaluable platform for reporting bugs, discussing internals, and receiving guidance.</li>
-                <li>Understanding internal data structures (like `struct pathspec_item` and its `nowildcard_len` field) is often key to diagnosing complex behavior.</li>
-                <li>**New:** Crafting a clear, conventional commit message is as important as the code change itself. It tells the 'why' for future maintainers.</li>
-                <li>**New:** Thorough testing, covering various scenarios and commands, is essential for robust contributions.</li>
-                <li>**New:** Adhering to project-specific coding and testing style guidelines (like indentation, script structure) streamlines the review process.</li>
-                <li>**New:** Be receptive to feedback and iterate. Reviews are a learning opportunity, not a critique of ability.</li>
-                <li>**New:** Pay attention to details like trailers ("Helped-by" vs. "Mentored-by") and even editor configurations for patch formatting.</li>
+                <li>Pathspecs in Git rely on explicit flags, not just pattern inference.</li>
+                <li>Subtle bugs often lurk in optimization logic.</li>
+                <li>The Git mailing list is a powerful space to learn and improve code.</li>
+                <li>Understanding internal structures like <code>pathspec_item</code> is essential.</li>
+                <li><strong>New:</strong> Clear, conventional commit messages are crucial for future readers.</li>
+                <li><strong>New:</strong> Tests must be comprehensive and platform-aware.</li>
+                <li><strong>New:</strong> Coding conventions help reviewers and maintainers.</li>
+                <li><strong>New:</strong> Respect and act on feedback—it’s a core part of open source.</li>
+                <li><strong>New:</strong> Even small details like tab width and trailers matter in community-driven projects.</li>
             </ul>
 
-            <p>This bug hunt and patch iteration process was a profound learning experience, reinforcing the importance of clear test cases, persistent debugging, meticulous attention to project conventions, and leveraging the collective knowledge and guidance of the Git community.</p>
-
-             <h3>Pro Tip</h3>
-             <p>If you need to reliably match files using wildcards, especially in scripts or complex scenarios, consider using the explicit `:(glob)` prefix (e.g., `git add ':(glob)f*'`). If you need to add a file whose name literally contains a wildcard character, escape it: `git add 'f\*'`.</p>
+            <h3>Pro Tip</h3>
+            <p>Use <code>:(glob)f*</code> for wildcard expansion, and <code>f\*</code> to add a literal filename containing <code>*</code>.</p>
 
         </article>
     </div>
