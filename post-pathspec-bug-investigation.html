@@ -46,7 +46,7 @@ git add 'f*'</code></pre>
 
             <h2>Initial Investigation: The <code>MATCHED_EXACTLY</code> Hypothesis</h2>
 
-            <p>My initial dive into <code>builtin/add.c</code> suggested the issue was with:</p>
+            <p>My initial dive into <code>dir.c</code> suggested the issue was with:</p>
             <pre><code>if (seen && seen[i] == MATCHED_EXACTLY)
     continue;</code></pre>
 
@@ -69,10 +69,6 @@ git add 'f*'</code></pre>
 +           continue;</code></pre>
 
             <p>This ensured only true literals skipped further matching.</p>
-
-            <h2>The Fix and Patch Submission</h2>
-
-            <p>The fix was submitted to the mailing list, and discussion started <a href="https://lore.kernel.org/git/CA+rGoLe=A61CRNUztHvDpPTUxW1TobS4vknyF3OGTEP0imnwjQ@mail.gmail.com/T/#t" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
             <h2>Patch V2: Test Suite</h2>
 
@@ -118,7 +114,7 @@ the given pathspec."</p>
 
             <h2>Patch Refinement</h2>
 
-            <p>Incorporated all style and message feedback. The final patch can be viewed <a href="https://lore.kernel.org/git/20250503060713.30374-1-jayatheerthkulkarni2005@gmail.com/T/#u" target="_blank" rel="noopener noreferrer">here</a>.</p>
+            <p>Incorporated all style and message feedback. The final patch can be viewed <a href="https://lore.kernel.org/git/CA+rGoLe5-Jk=nQ_hv0gVgNH4BTdcHDZ1SP7_Xo9rPUkNADFNPQ@mail.gmail.com/T/#u" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
             <h3>Tab Width Matters</h3>
 
@@ -136,12 +132,11 @@ the given pathspec."</p>
                 <li><strong>New:</strong> Clear, conventional commit messages are crucial for future readers.</li>
                 <li><strong>New:</strong> Tests must be comprehensive and platform-aware.</li>
                 <li><strong>New:</strong> Coding conventions help reviewers and maintainers.</li>
-                <li><strong>New:</strong> Respect and act on feedback—it’s a core part of open source.</li>
                 <li><strong>New:</strong> Even small details like tab width and trailers matter in community-driven projects.</li>
             </ul>
 
             <h3>Pro Tip</h3>
-            <p>Use <code>:(glob)f*</code> for wildcard expansion, and <code>f\*</code> to add a literal filename containing <code>*</code>.</p>
+            <p>Use <code>f\*</code> to add a literal filename.</p>
 
         </article>
     </div>
